@@ -43,4 +43,5 @@ xe_xulianh\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_pwr.h
 xe_xulianh\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_gpio.h
 xe_xulianh\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h
 xe_xulianh\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_exti.h
+xe_xulianh\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 xe_xulianh\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

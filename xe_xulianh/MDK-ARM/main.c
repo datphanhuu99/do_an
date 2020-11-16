@@ -20,10 +20,11 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include <math.h>
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+//#include "function.h"
+#include <math.h>
 #include <stdio.h>
 //#define arduino 0x68
 //#define I2C_SLAVE_ADDRESS7 	0x30	//
@@ -85,6 +86,7 @@ static void MX_TIM3_Init(void);
 #define	_Speed							100
 
 
+
 uint16_t duty_1=100,duty_2=100, fade=2;	//pwm
 int i,j;		//count
 int chieu=0;	//chieu dong co dc
@@ -98,22 +100,20 @@ uint8_t Tx_Idx,Rx_Idx,rx_addr_match=0,slave_receive_data=0;
 uint8_t i2cResponse[16]="hello world! 5";
 
 //setup encoder 
-int read_left_motor,read_right_motor;			
-int v1=100,v2=50;
-volatile short count_left=0,count_right=0, count_e2=0, count_next=0;//count encoder 1,2
+int read_dc1,read_dc2;			
+volatile short count_next=0,count_e2=0, count_e1=0;//count encoder 1,2
 
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void left_motor(int direction,int duty);
-void right_motor(int direction,int duty);
+void LeftMotor(int direction,int duty);
+void RightMotor(int direction,int duty);
 void servo(float angle);
 void uart_int(int data);
 void uart_string(char data[100]);
 void re_phai();
-void read();
 
 void RunRight90();
 void RunLeft90();
@@ -171,21 +171,18 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	servo(0);
-	left_motor(0, 0);
-	right_motor(0, 0);
+	RightMotor(0, 0);
+	LeftMotor(0, 0);
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		
-//		uart_int(duty);
-//		read();
-//		
-//		left_motor(1,v1);
-//		right_motor(1,v2);
-//		re_phai();
-//		
+
+
+		count_e1=-(__HAL_TIM_GET_COUNTER(&htim2));//counter
+		//count_e1=-(__HAL_TIM_GET_COUNTER(&htim2));//counter
+		count_e2=-(__HAL_TIM_GET_COUNTER(&htim3));//counter
 		
 		if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15)){
 			while(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15));
@@ -203,15 +200,20 @@ int main(void)
 //					break;
 //				}
 //			}
-			RunLeft90();
+			RunRight90();
 			servo(0);
-			left_motor(1, 20);
-			right_motor(1, 20);
+			LeftMotor(1, 20);
+			RightMotor(1, 20);
 			HAL_Delay(200);
-			left_motor(0, 0);
-			right_motor(0, 0);
+			LeftMotor(0, 0);
+			RightMotor(0, 0);
 		}
+		
+		
+		
+
   }
+		
   /* USER CODE END 3 */
 }
 
@@ -706,19 +708,19 @@ static void MX_GPIO_Init(void)
 //{
 //	if(GPIO_Pin==GPIO_PIN_4)
 //	{
-//		count_left++;
+//		count_e1++;
 //		if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_4)==HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5))
 //		{
-//			read_left_motor=1;
-//		}else read_left_motor=2;
+//			read_dc1=1;
+//		}else read_dc1=2;
 //	}
 //	if(GPIO_Pin==GPIO_PIN_15)
 //	{
-//		count_right++;
+//		count_e2++;
 //		if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)==HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_1))
 //		{
-//			read_right_motor=1;
-//		}else read_right_motor=2;
+//			read_dc2=1;
+//		}else read_dc2=2;
 //	}
 //}
 
@@ -726,32 +728,26 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 
 }
-void read()
-{
-	count_left=-(__HAL_TIM_GET_COUNTER(&htim2));//counter
-	count_right=-(__HAL_TIM_GET_COUNTER(&htim3));//counter
-	read_left_motor=(int)count_left;
-	read_right_motor=(int)count_right;
-}
 void re_phai()
 {
-	if(read_left_motor>1000)
-		v1=0;
-	if(read_right_motor>1000)
-		v2=0;
-	
-	left_motor(1,v1);
-	right_motor(1,v2);
+	LeftMotor(1,100);
+	RightMotor(1,50);
+	if(count_e2>1000)
+		LeftMotor(1,0);
+	if(count_e2>1000)
+		RightMotor(1,0);
 }
-void left_motor(int direction,int duty)
+void LeftMotor(int direction,int duty)
 {
 	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_1,direction);
 		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,duty);
+//		duty+=fade;
 }
-void right_motor(int direction,int duty)
+void RightMotor(int direction,int duty)
  {
 	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,direction);
 		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,duty);
+//		duty+=fade;
 }
 void servo(float angle)
 {
@@ -786,8 +782,8 @@ void RunLeft90 (){
 		while (1){
 			
 			servo(-Max_Angle);
-			right_motor(0, _Speed);
-			left_motor(0,_Speed*SpeedRatioCalculator);
+			RightMotor(0, _Speed);
+			LeftMotor(0,_Speed*SpeedRatioCalculator);
 			count_next=-(__HAL_TIM_GET_COUNTER(&htim3));
 			if ((count_next - count_e2) > GetFreq){
 				break;
@@ -805,23 +801,24 @@ void RunRight90 (){
 	
 	float GetSmallerDistance = (Length / a)*PI/2;
 	
-	float GetRound = GetLargerDistance/WheelSize ;
+	float GetRound = GetSmallerDistance/WheelSize ;
 
 	float GetFreq = GetRound*374*2;
 	
-	count_e2=-(__HAL_TIM_GET_COUNTER(&htim2));//counter
+	count_e2=-(__HAL_TIM_GET_COUNTER(&htim3));//counter
 		while (1){
 			
 			servo(Max_Angle);
-			right_motor(0, _Speed*SpeedRatioCalculator);
-			left_motor(0,_Speed);
-			count_next=-(__HAL_TIM_GET_COUNTER(&htim2));
+			RightMotor(0, _Speed*SpeedRatioCalculator);
+			LeftMotor(0,_Speed);
+			count_next=-(__HAL_TIM_GET_COUNTER(&htim3));
 			if ((count_next - count_e2) > GetFreq){
 				break;
 			}
 		}
 	
 }
+
 /* USER CODE END 4 */
 
 /**

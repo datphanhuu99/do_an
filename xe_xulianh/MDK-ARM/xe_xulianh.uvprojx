@@ -417,6 +417,11 @@
               <FileType>1</FileType>
               <FilePath>../Src/stm32f1xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>function.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\xe_xulianh\MDK-ARM\function.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

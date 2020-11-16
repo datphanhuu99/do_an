@@ -21,13 +21,38 @@ Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.7.0
 Dialog DLL:      TCM.DLL V1.36.5.0
  
 <h2>Project:</h2>
-D:\DoAn1\stm32f4\xe_xulianh\MDK-ARM\xe_xulianh.uvprojx
-Project File Date:  11/15/2020
+D:\DoAn1\stm32f4\do_an\xe_xulianh\MDK-ARM\xe_xulianh.uvprojx
+Project File Date:  11/16/2020
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'xe_xulianh'
-"xe_xulianh\xe_xulianh.axf" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+../Src/main.c(115): warning:  #1295-D: Deprecated declaration re_phai - give arg types
+  void re_phai();
+../Src/main.c(116): warning:  #1295-D: Deprecated declaration read - give arg types
+  void read();
+../Src/main.c(118): warning:  #1295-D: Deprecated declaration RunRight90 - give arg types
+  void RunRight90();
+../Src/main.c(119): warning:  #1295-D: Deprecated declaration RunLeft90 - give arg types
+  void RunLeft90();
+../Src/main.c(748): warning:  #188-D: enumerated type mixed with another type
+  	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_1,direction);
+../Src/main.c(753): warning:  #188-D: enumerated type mixed with another type
+  	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,direction);
+../Src/main.c(763): warning:  #223-D: function "strlen" declared implicitly
+  	len=strlen(buffer);	
+../Src/main.c(764): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+  	HAL_UART_Transmit(&huart2,buffer,len, 1000);
+../Src/main.c(768): warning:  #223-D: function "strlen" declared implicitly
+  	len=strlen(data);	
+../Src/main.c(769): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+  	HAL_UART_Transmit(&huart2,data,len, 1000);
+../Src/main.c: 10 warnings, 0 errors
+linking...
+Program Size: Code=17020 RO-data=604 RW-data=48 ZI-data=2408  
+FromELF: creating hex file...
+"xe_xulianh\xe_xulianh.axf" - 0 Error(s), 10 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -50,7 +75,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.3.0
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>
